@@ -19,7 +19,7 @@ class CompoundAdapter(
     private var compoundList: MutableList<Compound>,
 ) : RecyclerView.Adapter<CompoundAdapter.CompoundViewHolder>() {
 
-    private val TASK_LIST = "tasks"
+    private val TASK_LIST = "compound"
     private val TASK_FILE = "task_file"
 
     override fun onCreateViewHolder(

@@ -23,24 +23,47 @@ class HomeFragment : Fragment() {
 
     private val compoundsList: MutableList<Compound> = Compounds.compounds
 
+    lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        recyclerView = view.findViewById<RecyclerView>(R.id.compoundRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = CompoundAdapter(requireContext(), compoundsList)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.compoundRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = CompoundAdapter(requireContext(), compoundsList)
+        getTasksList(requireContext())
+
+        val name = arguments?.getString("name")
+        val symbol = arguments?.getString("symbol")
+        val moleMass = arguments?.getDouble("moleMass")
+
+        if(name!=null && symbol!=null && moleMass!=null) {
+            if(!compoundsList.contains(Compound(name,symbol,moleMass))) {
+                (recyclerView.adapter as CompoundAdapter).addToList(name,symbol,moleMass)
+            }
+        }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
+    }
+
+    fun saveTaskList(context: Context) {
+        (recyclerView.adapter as CompoundAdapter).saveCompoundList(context)
+    }
+
+    fun getTasksList(context: Context) {
+        (recyclerView.adapter as CompoundAdapter).getCompoundList(context)
     }
 }

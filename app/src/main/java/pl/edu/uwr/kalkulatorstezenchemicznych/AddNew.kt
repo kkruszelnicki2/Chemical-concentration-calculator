@@ -19,30 +19,38 @@ object addCompounds {
     )
 }
 
-class AddNew : Fragment() { private val wordList by lazy { List(50) { "word $it" } }
+class AddNew : Fragment() {
 
     private var mContext: Context? = null
 
     private val compoundsList: MutableList<Compound> = addCompounds.compounds
 
+    lateinit var recyclerView: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view = inflater.inflate(R.layout.add_new, container, false)
 
-        return inflater.inflate(R.layout.add_new, container, false)
+        recyclerView = view.findViewById(R.id.compoundRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = AddCompoundAdapter(requireContext(), compoundsList)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.compoundRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = AddCompoundAdapter(requireContext(), compoundsList)
+        getTasksList(requireContext())
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
+    }
+
+    fun getTasksList(context: Context) {
+        (recyclerView.adapter as AddCompoundAdapter).getCompoundList(context)
     }
 }

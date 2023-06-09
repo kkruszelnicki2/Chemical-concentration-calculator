@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -17,7 +18,7 @@ class AddCompoundAdapter(
     private var compoundList: MutableList<Compound>,
 ) : RecyclerView.Adapter<AddCompoundAdapter.AddCompoundViewHolder>() {
 
-    private val TASK_LIST = "tasks"
+    private val TASK_LIST = "addcompound"
     private val TASK_FILE = "task_file"
 
     override fun onCreateViewHolder(
@@ -43,9 +44,15 @@ class AddCompoundAdapter(
         bundle.putString("symbol",symbol)
         bundle.putDouble("moleMass",moleMass)
 
-        holder.addButton.setOnClickListener (
-            Navigation.createNavigateOnClickListener(R.id.to_menu,bundle)
-        )
+        holder.addButton.setOnClickListener {
+            deleteCompound(position)
+            notifyDataSetChanged()
+            saveCompoundList(context)
+
+            holder.addButton.findNavController().navigate(
+                R.id.to_menu,bundle
+            )
+        }
     }
 
     override fun getItemCount() = compoundList.size
@@ -53,6 +60,11 @@ class AddCompoundAdapter(
     class AddCompoundViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val compoundName: TextView = itemView.findViewById(R.id.name)
         val addButton: ImageView = itemView.findViewById(R.id.add)
+    }
+
+    fun deleteCompound(position: Int) {
+        compoundList.removeAt(position)
+
     }
 
     fun saveCompoundList(context: Context) {
