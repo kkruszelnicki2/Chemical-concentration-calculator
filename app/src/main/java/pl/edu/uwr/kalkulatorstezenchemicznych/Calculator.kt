@@ -9,6 +9,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class Calculator: Fragment() {
 
@@ -44,10 +46,13 @@ class Calculator: Fragment() {
             val percentageConc = view.findViewById<TextView>(R.id.percentageConc)
             val moleConc = view.findViewById<TextView>(R.id.molarConc)
 
+            val df = DecimalFormat("#.###")
+            df.roundingMode = RoundingMode.UP
+
             if(rMass!="" && sMass!="" && initConc!="" && rMass.toDouble() > 0 && initConc.toDouble() >= 0 && initConc.toDouble() <= 100) {
                 percentageMess.text=""
 
-                var pConcValue = sMass.toDouble()/rMass.toDouble() * (initConc.toDouble()*0.01)
+                var pConcValue = df.format(sMass.toDouble()/rMass.toDouble() * (initConc.toDouble()*0.01))
                 percentageConc.text = pConcValue.toString()
             }
             else if(rMass=="" || sMass=="") {
@@ -66,7 +71,7 @@ class Calculator: Fragment() {
                 val MMass = rMoleMass.toDouble() + moleMass!!
                 val n = sMass.toDouble()/MMass.toDouble()
 
-                val CMol = n/(rV.toDouble()+sV.toDouble())
+                val CMol = df.format(n/(rV.toDouble()+sV.toDouble()))
                 moleConc.text = CMol.toString()
             }
             else {
